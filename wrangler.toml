@@ -1,0 +1,30 @@
+name = "autodub-gemini-gateway"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+# Optional: Uncomment and replace with your Cloudflare zone domain to bind a Custom Domain via Wrangler,
+# OR attach your custom domain directly in Cloudflare Dashboard -> Workers -> Settings -> Domains & Routes.
+# routes = [
+#   { pattern = "gemini.example.com", custom_domain = true }
+# ]
+
+[[durable_objects.bindings]]
+name = "US_RELAY"
+class_name = "UsGeminiRelay"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["UsGeminiRelay"]
+
+[[ratelimits]]
+name = "GATEWAY_RATE_LIMITER"
+namespace_id = "1001"
+
+[ratelimits.simple]
+limit = 120
+period = 60
+
+[vars]
+DO_SHARD_COUNT = "8"
+US_LOCATION_HINT = "wnam"
